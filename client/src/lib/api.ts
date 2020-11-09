@@ -1,6 +1,5 @@
 import Axios, { AxiosRequestConfig } from "axios";
-import React, { Component } from "react";
-import RNRestart from 'react-native-restart';
+import authToken from "./authToken";
 
 const axios = Axios.create({
   timeout: process.env.timeout || 30000,
@@ -13,8 +12,9 @@ axios.interceptors.request.use(
     config.headers.post["Content-Type"] = "application/json";
     config.headers.put["Content-Type"] = "application/json";
 
-    if (global["token"]) {
-      config.headers.common["Authorization"] = "Bearer " + global["token"];
+    const token = await authToken.get();
+    if (token) {
+      config.headers.common["Authorization"] = "Bearer " + token;
     }
 
     return config;
@@ -40,15 +40,13 @@ async function myFetch(setIsLoading, config?: AxiosRequestConfig): Promise<Respo
 
       // Unauthorized
       if (response.status === 401) {
-        delete global["token"];
-        RNRestart.Restart();
+        authToken.clear();
         return;
       }
 
       // Forbidden
       if (response.status === 403) {
-        delete global["token"];
-        RNRestart.Restart();
+        authToken.clear();
         return;
       }
 

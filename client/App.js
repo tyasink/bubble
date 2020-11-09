@@ -1,40 +1,37 @@
-import React, { useState } from 'react';
-import { Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Button, Icon } from 'native-base';
+import { Icon, Spinner } from 'native-base';
 import LoginScreen from './src/screens/LoginScreen';
-import RNRestart from 'react-native-restart';
-
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home!</Text>
-    </View>
-  );
-}
-
-function SettingsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Settings!</Text>
-      <Icon name="home" type="FontAwesome5" />
-      <Button onPress={() => {
-        global.token = null;
-        RNRestart.Restart();
-      }}><Text>Logout</Text></Button>
-    </View>
-  );
-}
+import HomeScreen from './src/screens/HomeScreen';
+import authToken from './src/lib/authToken';
+import SettingsScreen from './src/screens/SettingsScreen';
 
 const Tab = createBottomTabNavigator();
 
+const tabs = [
+  { name: "Home", component: HomeScreen, icon: "home" },
+  { name: "Settings", component: SettingsScreen, icon: "user" },
+];
+
 export default function App() {
 
-  const [token, setToken] = useState(global.token);
+  const [isLoading, setIsLoading] = useState(true);
+  const [token, setToken] = useState();
+
+  useEffect(() => {
+    (async () => {
+      setToken(await authToken.get());
+      setIsLoading(false);
+    })();
+  }, []);
+
+  if (isLoading) {
+    return <Spinner />
+  }
 
   const loggedIn = x => {
-    global.token = x;
+    authToken.set(x);
     setToken(x);
   }
 
@@ -45,8 +42,17 @@ export default function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarIcon: ({ color, size: fontSize }) => <Icon name="home" style={{ color, fontSize }} /> }} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
+        {tabs.map((x, i) => (
+          <Tab.Screen
+            key={i}
+            name={x.name}
+            component={x.component}
+            options={{
+              tabBarIcon: ({ color, size: fontSize }) => (
+                <Icon name={x.icon} type="FontAwesome5" style={{ color, fontSize }} />
+              )
+            }} />
+        ))}
       </Tab.Navigator>
     </NavigationContainer>
   );

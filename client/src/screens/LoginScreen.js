@@ -1,6 +1,5 @@
-import { Body, Button, Container, Content, Form, Header, Input, Item, Label, Spinner, Text, Title, View } from 'native-base';
+import { Body, Button, Container, Content, Form, Header, Input, Item, Label, Spinner, Text, Title } from 'native-base';
 import React, { useState } from 'react';
-import { useSafeArea } from 'react-native-safe-area-context';
 import api from '../lib/api';
 
 export default function LoginScreen({ loggedIn }) {
@@ -24,10 +23,6 @@ export default function LoginScreen({ loggedIn }) {
         loggedIn(result.token);
     }
 
-    if (isLoading) {
-        return <Spinner />
-    }
-
     return (
         <Container>
             <Header>
@@ -36,19 +31,21 @@ export default function LoginScreen({ loggedIn }) {
                 </Body>
             </Header>
             <Content padder>
-                <Form>
-                    <Item stackedLabel>
-                        <Label>Username</Label>
-                        <Input value={username} onChangeText={setUsername} />
-                    </Item>
-                    <Item stackedLabel last>
-                        <Label>Password</Label>
-                        <Input secureTextEntry value={password} onChangeText={setPassword} />
-                    </Item>
-                </Form>
-                <Button block onPress={login} style={{ marginTop: 50 }}>
-                    <Text>Login</Text>
-                </Button>
+                {isLoading ? <Spinner /> : (<>
+                    <Form>
+                        <Item stackedLabel>
+                            <Label>Username</Label>
+                            <Input value={username} onChangeText={setUsername} />
+                        </Item>
+                        <Item stackedLabel last>
+                            <Label>Password</Label>
+                            <Input secureTextEntry value={password} onChangeText={setPassword} />
+                        </Item>
+                    </Form>
+                    <Button block onPress={login} style={{ marginTop: 50 }}>
+                        <Text>Login</Text>
+                    </Button>
+                </>)}
             </Content>
         </Container>
     );
