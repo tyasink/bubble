@@ -1,8 +1,10 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Icon } from 'native-base';
+import { Button, Icon } from 'native-base';
+import LoginScreen from './src/screens/LoginScreen';
+import RNRestart from 'react-native-restart';
 
 function HomeScreen() {
   return (
@@ -17,6 +19,10 @@ function SettingsScreen() {
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Settings!</Text>
       <Icon name="home" type="FontAwesome5" />
+      <Button onPress={() => {
+        global.token = null;
+        RNRestart.Restart();
+      }}><Text>Logout</Text></Button>
     </View>
   );
 }
@@ -24,6 +30,18 @@ function SettingsScreen() {
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+
+  const [token, setToken] = useState(global.token);
+
+  const loggedIn = x => {
+    global.token = x;
+    setToken(x);
+  }
+
+  if (!token) {
+    return <LoginScreen loggedIn={loggedIn} />
+  }
+
   return (
     <NavigationContainer>
       <Tab.Navigator>
