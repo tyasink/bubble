@@ -1,5 +1,5 @@
 import React from "react";
-import { Body, Container, Content, H1, H3, Header, Text, Title } from "native-base";
+import { Container, Content, H3, Text } from "native-base";
 
 export default function SitterScreen({ route, navigation }) {
 

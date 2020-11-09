@@ -9,6 +9,8 @@ import HomeScreen from './src/screens/HomeScreen';
 import SearchScreen from './src/screens/SearchScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import SitterScreen from './src/screens/SitterScreen';
+import BookingsScreen from './src/screens/BookingsScreen';
+import BookingDetailsScreen from './src/screens/BookingDetailsScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -16,6 +18,7 @@ const Stack = createStackNavigator();
 const tabs = [
   { name: "Home", component: HomeScreen, icon: "home" },
   { name: "Search", component: SearchScreen, icon: "search" },
+  { name: "Bookings", component: BookingsScreen, icon: "bookmark" },
   { name: "Settings", component: SettingsScreen, icon: "user" },
 ];
 
@@ -63,8 +66,9 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Join Bubble !" component={Tabs} />
+        <Stack.Screen name="Join Bubble !" component={Tabs} options={{ headerShown: false }} />
         <Stack.Screen name="SitterScreen" component={SitterScreen} options={({ route }) => ({ title: route.params.user.fullName })} />
+        <Stack.Screen name="BookingDetailsScreen" component={BookingDetailsScreen} options={({ route }) => ({ title: route.params.booking.otherUserFullName })} />
       </Stack.Navigator>
     </NavigationContainer>
   );

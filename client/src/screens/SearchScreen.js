@@ -40,8 +40,8 @@ export default function SearchScreen({ navigation }) {
                         <Text>{x.fullName}</Text>
                         <Text note>{x.biography}</Text>
                         <View style={{ flex: 1, flexDirection: "row", flexWrap: "wrap" }}>
-                            {Object.keys(x.otherLanguagesSpoken.value).map(x => (
-                                <Badge warning style={{ margin: 1 }}>
+                            {Object.keys(x.otherLanguagesSpoken.value).map((x, i) => (
+                                <Badge key={i} warning style={{ margin: 1 }}>
                                     <Text>{x}</Text>
                                 </Badge>
                             ))}
